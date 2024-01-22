@@ -18,24 +18,27 @@ public class Exchange {
         this.edges[to].add(new int[] { from, capacity });
     }
 
-    public void exchange(int start) {
-        int[] tour = generateInitialTour(start);
+    public void exchange() {
+        int[] tour = generateInitialTour();
 
         int initialDistance = calculateTourDistance(tour);
 
-        for (int i = 0; i < this.numberOfVertices - 1; i++) {
-            int[] newTour = tour.clone();
-            int aux = newTour[i];
-            newTour[i] = newTour[i + 1];
-            newTour[i + 1] = aux;
+        for (int i = 0; i < this.numberOfVertices; i++) {
+            for (int j = 0; j < this.numberOfVertices; j++) {
+                int[] newTour = tour.clone();
+                int aux = newTour[i];
+                newTour[i] = newTour[j];
+                newTour[j] = aux;
 
-            int newDistance = calculateTourDistance(newTour);
+                int newDistance = calculateTourDistance(newTour);
 
-            if (newDistance < initialDistance) {
-                tour = newTour;
-                initialDistance = newDistance;
+                if (newDistance < initialDistance) {
+                    tour = newTour;
+                    initialDistance = newDistance;
+                }
             }
         }
+        
 
         System.out.println("Custo: " + calculateTourDistance(tour));
         System.out.print("Rota: ");
@@ -45,34 +48,8 @@ public class Exchange {
         System.out.print((tour[0] + 1));
     }
 
-    private int[] generateInitialTour(int start) {
-        int[] tour = new int[this.numberOfVertices];
-        boolean[] visited = new boolean[this.numberOfVertices];
-        int tourIndex = 0;
-        int currentVertex = start;
-        visited[currentVertex] = true;
-        tour[tourIndex++] = currentVertex;
-
-        while (tourIndex < this.numberOfVertices) {
-            int nearestNeighbor = -1;
-            int minDistance = Integer.MAX_VALUE;
-
-            for (int[] neighbor : this.edges[currentVertex]) {
-                int to = neighbor[0];
-                int distance = neighbor[1];
-
-                if (!visited[to] && distance < minDistance) {
-                    minDistance = distance;
-                    nearestNeighbor = to;
-                }
-            }
-
-            visited[nearestNeighbor] = true;
-            tour[tourIndex++] = nearestNeighbor;
-            currentVertex = nearestNeighbor;
-        }
-
-        return tour;
+    private int[] generateInitialTour() {
+        return new int[] { 0, 1, 2, 3, 4, 5};
     }
 
     private int calculateTourDistance(int[] tour) {
@@ -115,6 +92,6 @@ public class Exchange {
         e.addEdge(3, 5, 3);
         e.addEdge(4, 5, 20);
 
-        e.exchange(0);
+        e.exchange();
     }
 }
