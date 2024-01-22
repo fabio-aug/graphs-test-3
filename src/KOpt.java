@@ -18,13 +18,13 @@ public class KOpt {
         this.edges[to].add(new int[] { from, capacity });
     }
 
-    public void kopt(int start) {
-        int[] tour = generateInitialTour(start);
+    public void kopt() {
+        int[] tour = generateInitialTour();
 
         int initialDistance = calculateTourDistance(tour);
 
-        for (int i = 1; i < this.numberOfVertices - 2; i++) {
-            for (int j = i + 1; j < this.numberOfVertices - 1; j++) {
+        for (int i = 1; i < numberOfVertices - 1; i++) {
+            for (int j = i + 1; j < numberOfVertices; j++) {
                 int[] newTour = swap(tour, i, j);
                 int newDistance = calculateTourDistance(newTour);
 
@@ -43,33 +43,8 @@ public class KOpt {
         System.out.print((tour[0] + 1));
     }
 
-    private int[] generateInitialTour(int start) {
-        int[] tour = new int[this.numberOfVertices];
-        boolean[] visited = new boolean[this.numberOfVertices];
-        int tourIndex = 0;
-        int currentVertex = start;
-        visited[currentVertex] = true;
-        tour[tourIndex++] = currentVertex;
-
-        while (tourIndex < this.numberOfVertices) {
-            int nearestNeighbor = -1;
-            int minDistance = Integer.MAX_VALUE;
-
-            for (int[] neighbor : this.edges[currentVertex]) {
-                int to = neighbor[0];
-                int distance = neighbor[1];
-                if (!visited[to] && distance < minDistance) {
-                    minDistance = distance;
-                    nearestNeighbor = to;
-                }
-            }
-
-            visited[nearestNeighbor] = true;
-            tour[tourIndex++] = nearestNeighbor;
-            currentVertex = nearestNeighbor;
-        }
-
-        return tour;
+    private int[] generateInitialTour() {
+        return new int[] { 0, 1, 2, 3, 4, 5};
     }
 
     private int calculateTourDistance(int[] tour) {
@@ -96,15 +71,12 @@ public class KOpt {
     private int[] swap(int[] tour, int i, int j) {
         int[] newTour = tour.clone();
 
-        int k = i;
-        int l = j;
-
-        while (k < l) {
-            int temp = newTour[k];
-            newTour[k] = newTour[l];
-            newTour[l] = temp;
-            k++;
-            l--;
+        while (i < j) {
+            int temp = newTour[i];
+            newTour[i] = newTour[j];
+            newTour[j] = temp;
+            i++;
+            j--;
         }
 
         return newTour;
@@ -129,6 +101,6 @@ public class KOpt {
         k.addEdge(3, 5, 3);
         k.addEdge(4, 5, 20);
 
-        k.kopt(0);
+        k.kopt();
     }
 }
